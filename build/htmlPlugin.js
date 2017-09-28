@@ -1,9 +1,27 @@
 var path = require('path');
 var fs=require('fs');
+var glob=require('glob');
 var HtmlwebpackPlugin = require('html-webpack-plugin');
-var htmlPath=path.normalize(__dirname+'/../src/views');
+var htmlPath=path.normalize(__dirname+'/../src/views/*.html');
+var pathDir=path.normalize(__dirname+'/../src/views/');
 var pluginsHtml=[];
-var files=['index','login'];
+function getEntry(globPath, pathDir) {
+    var files = glob.sync(globPath);
+    var entries = [],
+        entry, dirname, basename, pathname, extname;
+
+    for (var i = 0; i < files.length; i++) {
+        entry = files[i];
+        dirname = path.dirname(entry);
+        extname = path.extname(entry);
+        basename = path.basename(entry, extname);
+        pathname = path.join(dirname, basename);
+        //pathname = pathDir ? pathname.replace(new RegExp('^' + pathDir), '') : pathname;
+        entries.push(basename);
+    }
+    return entries;
+}
+var files=getEntry(htmlPath,pathDir);
 files.forEach(function(value){
     var l=new HtmlwebpackPlugin({
         title: 'Hello World',
@@ -20,18 +38,5 @@ files.forEach(function(value){
     });
     pluginsHtml.push(l)
 })
-fs.readdir(htmlPath,function(err,files){
-    files.forEach(function(file){
-        fs.stat(htmlPath + '/' + file, function(err, stat){
-            if(err){console.log(err); return;}
-            if(stat.isDirectory()){
-                // 如果是文件夹遍历
-            }else{
-                // 读出所有的文件
 
-                console.log('文件名:' + path + '/' + file);
-            }
-        });
-    })
-});
 module .exports=pluginsHtml

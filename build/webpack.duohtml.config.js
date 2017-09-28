@@ -5,7 +5,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var webpack = require("webpack");
 module.exports={
     entry: {
-        build:"./main.js",
+        build:"./login.js",
         index:'./index.js'
     },
     output: {
